@@ -63,7 +63,7 @@ jobs:
 
   # Build arm64 image
   build-arm64:
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-latest
     permissions:
       packages: write
       contents: read
