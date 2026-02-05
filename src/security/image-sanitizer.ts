@@ -84,7 +84,7 @@ export async function sanitizeImageByProfile(
     }
 
     default:
-      throw new Error(`Unknown sanitization profile: ${profile}`);
+      throw new Error(`Unknown sanitization profile: ${profile as string}`);
   }
 }
 

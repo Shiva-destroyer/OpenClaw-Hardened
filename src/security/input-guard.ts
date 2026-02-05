@@ -448,7 +448,7 @@ export async function guardMedia(
       logError(
         `🚨 InputGuard: Image BLOCKED for ${source}${senderId ? ` (${senderId})` : ""} ` +
           `score=${anomalyScore.score} verdict=${anomalyScore.verdict} ` +
-          `${anomalyScore.summary}`,
+          anomalyScore.summary,
       );
       throw new Error(`Image rejected: ${anomalyScore.summary}`);
     }
