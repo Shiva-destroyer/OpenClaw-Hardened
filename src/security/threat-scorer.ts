@@ -382,7 +382,7 @@ function buildSummary(
   }
 
   const topPatterns = detectedPatterns
-    .sort((a, b) => b.score - a.score)
+    .toSorted((a, b) => b.score - a.score)
     .slice(0, 3)
     .map((p) => `${p.label}(${p.score})`)
     .join(", ");
@@ -432,7 +432,7 @@ function buildSummary(
  * Cost: ~$0.0001 per check (GPT-4o-mini)
  */
 export async function checkIntentWithLLM(
-  content: string,
+  _content: string,
 ): Promise<"BENIGN" | "MALICIOUS" | "UNAVAILABLE"> {
   // TODO: Implement LLM semantic validation
   // For now, return UNAVAILABLE (fall back to regex-only scoring)

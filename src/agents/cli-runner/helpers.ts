@@ -9,6 +9,7 @@ import type { OpenClawConfig } from "../../config/config.js";
 import type { CliBackendConfig } from "../../config/types.js";
 import type { EmbeddedContextFile } from "../pi-embedded-helpers.js";
 import { runExec } from "../../process/exec.js";
+import { validateSystemPromptConfig } from "../../security/input-guard.js";
 import { buildTtsSystemPromptHint } from "../../tts/tts.js";
 import { resolveDefaultModelForAgent } from "../model-selection.js";
 import { buildSystemPromptParams } from "../system-prompt-params.js";
@@ -209,6 +210,14 @@ export function buildSystemPrompt(params: {
   modelDisplay: string;
   agentId?: string;
 }) {
+  // 🛡️ SECURITY: Validate extraSystemPrompt to prevent config-based injection
+  const validatedExtraPrompt = params.extraSystemPrompt
+    ? validateSystemPromptConfig(
+        params.extraSystemPrompt,
+        `agents.${params.agentId ?? "default"}.extraSystemPrompt`,
+      )
+    : undefined;
+
   const defaultModelRef = resolveDefaultModelForAgent({
     cfg: params.config ?? {},
     agentId: params.agentId,
@@ -232,7 +241,7 @@ export function buildSystemPrompt(params: {
   return buildAgentSystemPrompt({
     workspaceDir: params.workspaceDir,
     defaultThinkLevel: params.defaultThinkLevel,
-    extraSystemPrompt: params.extraSystemPrompt,
+    extraSystemPrompt: validatedExtraPrompt,
     ownerNumbers: params.ownerNumbers,
     reasoningTagHint: false,
     heartbeatPrompt: params.heartbeatPrompt,

@@ -1,5 +1,5 @@
 import fc from "fast-check";
-import { describe, it, expect } from "vitest";
+import { describe, it } from "vitest";
 import { guardText } from "../input-guard.js";
 
 describe("Text Fuzzing: Chaos", () => {

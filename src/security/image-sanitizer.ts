@@ -120,10 +120,7 @@ export async function sanitizeImageWithFormatHint(
 
     if (fmt === "png" || fmt === "webp") {
       // PNG/WebP support lossless - preserve format
-      return sharp(buffer)
-        .withMetadata({})
-        .toFormat(fmt as "png" | "webp")
-        .toBuffer();
+      return sharp(buffer).withMetadata({}).toFormat(fmt).toBuffer();
     }
 
     // For JPEG/GIF, convert to PNG (lossless)

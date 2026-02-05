@@ -106,14 +106,20 @@ export class WebThreatScorer {
       const localRegex = new RegExp(regex.source, regex.flags); // Create fresh regex
 
       while ((match = localRegex.exec(html)) !== null) {
-        if (totalChars >= maxChars) return chunks; // Early exit (DoS protection)
+        if (totalChars >= maxChars) {
+          return chunks;
+        } // Early exit (DoS protection)
 
         // Extract text content (group 1 = the text inside the tags)
         const text = match[1]?.trim();
-        if (!text || text.length === 0) continue;
+        if (!text || text.length === 0) {
+          continue;
+        }
 
         // Skip accessibility patterns (whitelist)
-        if (this.isAccessibilityPattern(text)) continue;
+        if (this.isAccessibilityPattern(text)) {
+          continue;
+        }
 
         // Generate pseudo-selector for logging
         const fullMatch = match[0];

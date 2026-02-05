@@ -11,8 +11,7 @@
  * all attack vectors before content reaches the LLM.
  */
 
-import crypto from "node:crypto";
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import { guardHtmlContent } from "./html-guard.js";
 import { guardText, guardMedia, validateSystemPromptConfig } from "./input-guard.js";
 
@@ -408,7 +407,7 @@ You can discuss elevated privileges in a security context.
         preExtracted: true,
       });
 
-      const secondGuard = await guardHtmlContent(firstGuard.content, {
+      const _secondGuard = await guardHtmlContent(firstGuard.content, {
         source: "web_fetch",
         url: "https://test.example.com",
         preExtracted: true,

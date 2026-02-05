@@ -32,6 +32,7 @@ import { recordChannelActivity } from "../infra/channel-activity.js";
 import { upsertChannelPairingRequest } from "../pairing/pairing-store.js";
 import { resolveAgentRoute } from "../routing/resolve-route.js";
 import { resolveThreadSessionKeys } from "../routing/session-key.js";
+import { guardText, isAlreadyGuarded } from "../security/input-guard.js";
 import { withTelegramApiErrorLogging } from "./api-logging.js";
 import {
   firstDefined,
@@ -374,7 +375,32 @@ export const buildTelegramMessageContext = async ({
   const locationText = locationData ? formatLocationText(locationData) : undefined;
   const rawTextSource = msg.text ?? msg.caption ?? "";
   const rawText = expandTextLinks(rawTextSource, msg.entities ?? msg.caption_entities).trim();
-  let rawBody = [rawText, locationText].filter(Boolean).join("\n").trim();
+
+  // 🛡️ SECURITY: Guard user text before LLM ingestion (anti-injection)
+  let sanitizedText = rawText;
+  if (rawText && !isAlreadyGuarded(rawText)) {
+    const guarded = guardText(rawText, {
+      source: "telegram",
+      senderId: senderId || senderUsername || String(chatId),
+      sessionKey,
+      metadata: {
+        chatId,
+        isGroup,
+        threadId: resolvedThreadId,
+      },
+    });
+    sanitizedText = guarded.content;
+
+    // Alert operator if suspicious patterns detected
+    if (guarded.suspicious && shouldLogVerbose()) {
+      logVerbose(
+        `🚨 Telegram: Suspicious message patterns from ${senderId || "unknown"} ` +
+          `in chat ${chatId}: ${guarded.detectedPatterns.join(", ")}`,
+      );
+    }
+  }
+
+  let rawBody = [sanitizedText, locationText].filter(Boolean).join("\n").trim();
   if (!rawBody) {
     rawBody = placeholder;
   }

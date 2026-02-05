@@ -9,11 +9,13 @@ All enterprise-grade documentation has been created for the **OpenClaw: Hardened
 ## 📚 **Files Created**
 
 ### 1. **README.md** (251 lines)
+
 **Location**: [/README.md](README.md)
 
 **Purpose**: Front page of the repository - security-focused introduction
 
 **Highlights**:
+
 - 🛡️ Security badges (Elite, Tests Passing, Docker Ready)
 - Comparison table: Standard vs. Hardened Edition
 - Core security modules overview (EliteThreatScorer, ImageAnomalyDetector, WebThreatScorer, ImageSanitizer)
@@ -25,11 +27,13 @@ All enterprise-grade documentation has been created for the **OpenClaw: Hardened
 ---
 
 ### 2. **docs/wiki/Home.md** (171 lines)
+
 **Location**: [docs/wiki/Home.md](docs/wiki/Home.md)
 
 **Purpose**: Wiki landing page - high-level introduction
 
 **Highlights**:
+
 - Why this fork exists (RCE, Injection, Steganography vulnerabilities)
 - What we built (4 elite-tier security modules)
 - Documentation structure navigation
@@ -39,11 +43,13 @@ All enterprise-grade documentation has been created for the **OpenClaw: Hardened
 ---
 
 ### 3. **docs/wiki/Security-Architecture.md** (333 lines)
+
 **Location**: [docs/wiki/Security-Architecture.md](docs/wiki/Security-Architecture.md)
 
 **Purpose**: Technical deep dive for security engineers
 
 **Highlights**:
+
 - **4-Tier Defense Engine** explained:
   - Layer 1: EliteThreatScorer (text analysis)
   - Layer 2: WebThreatScorer (HTML/web content)
@@ -57,11 +63,13 @@ All enterprise-grade documentation has been created for the **OpenClaw: Hardened
 ---
 
 ### 4. **docs/wiki/Attack-Defense-Matrix.md** (333 lines)
+
 **Location**: [docs/wiki/Attack-Defense-Matrix.md](docs/wiki/Attack-Defense-Matrix.md)
 
 **Purpose**: Real attack examples and defense mechanisms
 
 **Highlights**:
+
 - **7 Attack Categories**:
   1. Prompt Injection (10 examples)
   2. Command Injection (5 examples)
@@ -80,11 +88,13 @@ All enterprise-grade documentation has been created for the **OpenClaw: Hardened
 ---
 
 ### 5. **docs/wiki/Red-Team-Reports.md** (282 lines)
+
 **Location**: [docs/wiki/Red-Team-Reports.md](docs/wiki/Red-Team-Reports.md)
 
 **Purpose**: Testing methodologies and validation results
 
 **Highlights**:
+
 - **4 Testing Tiers**:
   - Tier 1: Unit Tests (92.5% coverage)
   - Tier 2: Red Team Tests (28 scenarios, 100% pass)
@@ -102,11 +112,13 @@ All enterprise-grade documentation has been created for the **OpenClaw: Hardened
 ---
 
 ### 6. **docs/wiki/Contributing.md** (265 lines)
+
 **Location**: [docs/wiki/Contributing.md](docs/wiki/Contributing.md)
 
 **Purpose**: Professional contribution guidelines
 
 **Highlights**:
+
 - Contribution philosophy (Quality > Quantity)
 - Development workflow:
   - Fork & clone
@@ -126,32 +138,36 @@ All enterprise-grade documentation has been created for the **OpenClaw: Hardened
 
 ## 📊 **Documentation Statistics**
 
-| File | Lines | Size | Purpose |
-|------|-------|------|---------|
-| README.md | 251 | ~15KB | Front page |
-| Home.md | 171 | ~6.6KB | Wiki landing |
-| Security-Architecture.md | 333 | ~8.5KB | Technical deep dive |
-| Attack-Defense-Matrix.md | 333 | ~8.0KB | Attack examples |
-| Red-Team-Reports.md | 282 | ~8.5KB | Testing reports |
-| Contributing.md | 265 | ~6.7KB | Contribution guide |
-| **TOTAL** | **1,635** | **~53KB** | **Complete documentation suite** |
+| File                     | Lines     | Size      | Purpose                          |
+| ------------------------ | --------- | --------- | -------------------------------- |
+| README.md                | 251       | ~15KB     | Front page                       |
+| Home.md                  | 171       | ~6.6KB    | Wiki landing                     |
+| Security-Architecture.md | 333       | ~8.5KB    | Technical deep dive              |
+| Attack-Defense-Matrix.md | 333       | ~8.0KB    | Attack examples                  |
+| Red-Team-Reports.md      | 282       | ~8.5KB    | Testing reports                  |
+| Contributing.md          | 265       | ~6.7KB    | Contribution guide               |
+| **TOTAL**                | **1,635** | **~53KB** | **Complete documentation suite** |
 
 ---
 
 ## 🎯 **Target Audience**
 
 ### For **Security Researchers**:
+
 - [Security-Architecture.md](docs/wiki/Security-Architecture.md): Technical implementation
 - [Attack-Defense-Matrix.md](docs/wiki/Attack-Defense-Matrix.md): Real attack patterns
 
 ### For **Companies/Employers**:
+
 - [README.md](README.md): Professional overview
 - [Red-Team-Reports.md](docs/wiki/Red-Team-Reports.md): Validation results
 
 ### For **Contributors**:
+
 - [Contributing.md](docs/wiki/Contributing.md): How to help
 
 ### For **Upstream Maintainers (OpenClaw)**:
+
 - [README.md](README.md): Impressive fork showcase
 - [docs/security/HARDENING_REPORT.md](docs/security/HARDENING_REPORT.md): Summary of improvements
 
@@ -189,7 +205,9 @@ All wiki links use **relative paths** (e.g., `[Security Architecture](Security-A
 ## ✅ **Publishing Checklist**
 
 ### Immediate Next Steps:
+
 1. **Push to GitHub**:
+
    ```bash
    git add README.md docs/wiki/
    git commit -m "docs: Add enterprise-grade documentation for Hardened Edition"
@@ -202,6 +220,7 @@ All wiki links use **relative paths** (e.g., `[Security Architecture](Security-A
    - Set `Home.md` as the wiki home page
 
 3. **Update Repository Description**:
+
    ```
    🛡️ OpenClaw: Hardened Security Edition - Enterprise-grade defense against prompt injection, steganography, and RCE attacks. 28/28 red-team tests passing.
    ```
@@ -228,7 +247,7 @@ This documentation package demonstrates:
 ✅ **Testing Validation**: 282 lines of red-team reports  
 ✅ **Contribution Ready**: 265 lines of clear guidelines  
 ✅ **Impressive to Employers**: Production-ready security implementation  
-✅ **Impressive to Upstream**: Well-documented fork with real value  
+✅ **Impressive to Upstream**: Well-documented fork with real value
 
 ---
 

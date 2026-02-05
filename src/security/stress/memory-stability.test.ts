@@ -11,9 +11,13 @@ describe("Memory Stability (Heavy Load)", () => {
         source: "telegram",
         senderId: `user-${i}`,
       });
-      if (i % 1000 === 0 && global.gc) global.gc();
+      if (i % 1000 === 0 && global.gc) {
+        global.gc();
+      }
     }
-    if (global.gc) global.gc();
+    if (global.gc) {
+      global.gc();
+    }
     const growth = (process.memoryUsage().heapUsed - initialHeap) / 1024 / 1024;
     expect(growth).toBeLessThan(50); // Max 50MB growth
   });

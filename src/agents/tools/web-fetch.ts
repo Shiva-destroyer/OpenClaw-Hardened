@@ -1,9 +1,11 @@
 import { Type } from "@sinclair/typebox";
 import type { OpenClawConfig } from "../../config/config.js";
 import type { AnyAgentTool } from "./common.js";
+import { logVerbose, shouldLogVerbose } from "../../globals.js";
 import { fetchWithSsrFGuard } from "../../infra/net/fetch-guard.js";
 import { SsrFBlockedError } from "../../infra/net/ssrf.js";
 import { wrapExternalContent, wrapWebContent } from "../../security/external-content.js";
+import { guardHtmlContent, isAlreadyHtmlGuarded } from "../../security/html-guard.js";
 import { stringEnum } from "../schema/typebox.js";
 import { jsonResult, readNumberParam, readStringParam } from "./common.js";
 import {
@@ -526,6 +528,26 @@ async function runWebFetch(params: {
         throw new Error(
           "Web fetch extraction failed: Readability disabled and Firecrawl unavailable.",
         );
+      }
+
+      // 🛡️ SECURITY: Apply HTML Guard (strips invisible text, detects prompt injection)
+      if (!isAlreadyHtmlGuarded(text)) {
+        const guarded = await guardHtmlContent(text, {
+          source: "web_fetch",
+          url: finalUrl,
+          preExtracted: true, // Already extracted by Readability
+          extractMode: params.extractMode,
+        });
+        text = guarded.content;
+
+        // Alert if suspicious patterns detected
+        if (guarded.suspicious) {
+          const patterns = guarded.detectedPatterns.slice(0, 3).join(", ");
+          const msg = `🚨 Web Fetch: Suspicious HTML from ${finalUrl} (invisible: ${guarded.invisibleTextStripped}, patterns: ${patterns})`;
+          if (shouldLogVerbose()) {
+            logVerbose(msg);
+          }
+        }
       }
     } else if (contentType.includes("application/json")) {
       try {

@@ -12,6 +12,7 @@ import {
   resizeToJpeg,
 } from "../media/image-ops.js";
 import { detectMime, extensionForMime } from "../media/mime.js";
+import { guardMedia } from "../security/input-guard.js";
 import { resolveUserPath } from "../utils.js";
 
 export type WebMediaResult = {
@@ -139,8 +140,31 @@ async function loadWebMediaInternal(
     cap: number,
     meta?: { contentType?: string; fileName?: string },
   ) => {
-    const originalSize = buffer.length;
-    const optimized = await optimizeImageWithFallback({ buffer, cap, meta });
+    // 🛡️ SECURITY: Sanitize image first (strips metadata, breaks steganography)
+    let sanitizedBuffer = buffer;
+    try {
+      const guarded = await guardMedia(buffer, {
+        source: "web",
+        originalMimeType: meta?.contentType,
+        fileName: meta?.fileName,
+        aggressiveSanitization: true, // Enable blur + re-encode
+      });
+      sanitizedBuffer = guarded.buffer;
+
+      if (shouldLogVerbose()) {
+        logVerbose(
+          `🛡️ Media sanitized: ${buffer.length}→${sanitizedBuffer.length} bytes ` +
+            `(metadata=${guarded.metadataStripped}, re-encoded=${guarded.reEncoded})`,
+        );
+      }
+    } catch (err) {
+      // If sanitization fails, log but continue with original buffer
+      // (better to process potentially unsafe image than crash)
+      logVerbose(`⚠️ Media sanitization failed, using original: ${String(err)}`);
+    }
+
+    const originalSize = sanitizedBuffer.length;
+    const optimized = await optimizeImageWithFallback({ buffer: sanitizedBuffer, cap, meta });
     logOptimizedImage({ originalSize, optimized });
 
     if (optimized.buffer.length > cap) {

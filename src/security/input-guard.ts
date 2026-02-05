@@ -19,7 +19,6 @@ import type { MediaKind } from "../media/constants.js";
 import { logError, logInfo, logWarn } from "../logger.js";
 import { mediaKindFromMime } from "../media/constants.js";
 import { detectMime } from "../media/mime.js";
-import { detectSuspiciousPatterns } from "./external-content.js";
 import { detectImageAnomalies, type ImageAnomalyScore } from "./image-anomaly-detector.js";
 import { sanitizeImageByProfile } from "./image-sanitizer.js";
 import { calculateThreatScore, type ThreatScore, THREAT_THRESHOLDS } from "./threat-scorer.js";
@@ -116,10 +115,10 @@ const MAX_SYSTEM_PROMPT_LENGTH = 2000;
 const MAX_IMAGE_DIMENSION = 8192;
 
 /** JPEG quality for re-encoding (breaks LSB steganography) */
-const SANITIZE_JPEG_QUALITY = 85;
+const _SANITIZE_JPEG_QUALITY = 85;
 
 /** Gaussian blur radius (breaks pixel-perfect stego patterns) */
-const SANITIZE_BLUR_RADIUS = 0.3;
+const _SANITIZE_BLUR_RADIUS = 0.3;
 
 /** Forbidden phrases in system prompts (case-insensitive) */
 const FORBIDDEN_SYSTEM_PROMPT_PATTERNS = [
@@ -270,7 +269,7 @@ function logSecurityAlert(params: {
  * // Alert if result.suspicious === true
  */
 export function guardText(rawContent: string, options: GuardTextOptions): GuardedTextResult {
-  const { source, senderId, sessionKey, metadata } = options;
+  const { source, senderId, sessionKey, metadata: _metadata } = options;
 
   // Step 0: Skip if already guarded (prevent double-wrapping)
   if (isAlreadyGuarded(rawContent)) {
@@ -422,10 +421,10 @@ export async function guardMedia(
     try {
       metadata = await sharp(buffer).metadata();
     } catch (err) {
-      throw new Error(`Failed to parse image metadata: ${String(err)}`);
+      throw new Error(`Failed to parse image metadata: ${String(err)}`, { cause: err });
     }
 
-    const { width = 0, height = 0, format, hasAlpha } = metadata;
+    const { width = 0, height = 0, format, hasAlpha: _hasAlpha } = metadata;
 
     // Step 4: Validate dimensions (prevent dimension bombs)
     if (width > MAX_IMAGE_DIMENSION || height > MAX_IMAGE_DIMENSION) {
@@ -500,7 +499,7 @@ export async function guardMedia(
     };
   } catch (err) {
     logError(`🛡️ InputGuard: Media sanitization failed for ${source}: ${String(err)}`);
-    throw new Error(`Media sanitization failed: ${String(err)}`);
+    throw new Error(`Media sanitization failed: ${String(err)}`, { cause: err });
   }
 }
 

@@ -282,7 +282,9 @@ export class ImageAnomalyDetector {
    * @returns Error message if mismatch, null if valid
    */
   private checkMagicBytes(buffer: Buffer, claimedFormat?: string): string | null {
-    if (!claimedFormat) return null;
+    if (!claimedFormat) {
+      return null;
+    }
 
     const magicBytes: Record<string, Buffer> = {
       png: Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
@@ -293,7 +295,9 @@ export class ImageAnomalyDetector {
     };
 
     const expected = magicBytes[claimedFormat.toLowerCase()];
-    if (!expected) return null; // Unknown format, skip check
+    if (!expected) {
+      return null;
+    } // Unknown format, skip check
 
     const actual = buffer.subarray(0, expected.length);
     if (!actual.equals(expected)) {
@@ -317,7 +321,9 @@ export class ImageAnomalyDetector {
    * @returns Estimated metadata size in bytes
    */
   private estimateMetadataSize(buffer: Buffer, format?: string): number {
-    if (!format) return Math.floor(buffer.length * 0.05);
+    if (!format) {
+      return Math.floor(buffer.length * 0.05);
+    }
 
     const fmt = format.toLowerCase();
 

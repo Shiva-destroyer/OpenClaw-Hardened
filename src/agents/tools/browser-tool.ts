@@ -22,7 +22,9 @@ import {
 import { resolveBrowserConfig } from "../../browser/config.js";
 import { DEFAULT_AI_SNAPSHOT_MAX_CHARS } from "../../browser/constants.js";
 import { loadConfig } from "../../config/config.js";
+import { logVerbose, shouldLogVerbose } from "../../globals.js";
 import { saveMediaBuffer } from "../../media/store.js";
+import { guardHtmlContent, isAlreadyHtmlGuarded } from "../../security/html-guard.js";
 import { BrowserToolSchema } from "./browser-tool.schema.js";
 import { type AnyAgentTool, imageResultFromFile, jsonResult, readStringParam } from "./common.js";
 import { callGatewayTool } from "./gateway.js";
@@ -495,16 +497,41 @@ export function createBrowserTool(opts?: {
                 profile,
               });
           if (snapshot.format === "ai") {
+            // 🛡️ SECURITY: Guard browser snapshot content (CSS steganography defense)
+            let snapshotText = snapshot.snapshot;
+            if (!isAlreadyHtmlGuarded(snapshotText)) {
+              try {
+                const guarded = await guardHtmlContent(snapshotText, {
+                  source: "browser",
+                  url: snapshot.url,
+                  preExtracted: true, // Browser already extracted accessible tree
+                });
+                snapshotText = guarded.content;
+
+                if (guarded.suspicious && shouldLogVerbose()) {
+                  logVerbose(
+                    `🚨 Browser: Suspicious content in snapshot (invisible: ${guarded.invisibleTextStripped}, ` +
+                      `patterns: ${guarded.detectedPatterns.slice(0, 2).join(", ")})`,
+                  );
+                }
+              } catch (err) {
+                // If guard fails, log but continue (fail-open for browser snapshots)
+                if (shouldLogVerbose()) {
+                  logVerbose(`⚠️ Browser: HTML Guard failed: ${String(err)}`);
+                }
+              }
+            }
+
             if (labels && snapshot.imagePath) {
               return await imageResultFromFile({
                 label: "browser:snapshot",
                 path: snapshot.imagePath,
-                extraText: snapshot.snapshot,
+                extraText: snapshotText,
                 details: snapshot,
               });
             }
             return {
-              content: [{ type: "text", text: snapshot.snapshot }],
+              content: [{ type: "text", text: snapshotText }],
               details: snapshot,
             };
           }

@@ -7,7 +7,7 @@ Fork of [openclaw/openclaw](https://github.com/openclaw/openclaw) with additiona
 This fork implements four security modules that were missing from the upstream project:
 
 1. **Threat Scorer** (`src/security/threat-scorer.ts`) - Text-based prompt injection detection using regex patterns and entropy analysis
-2. **Image Anomaly Detector** (`src/security/image-anomaly-detector.ts`) - LSB steganography detection via Shannon entropy + histogram analysis  
+2. **Image Anomaly Detector** (`src/security/image-anomaly-detector.ts`) - LSB steganography detection via Shannon entropy + histogram analysis
 3. **Web Threat Scorer** (`src/security/web-threat-scorer.ts`) - HTML/CSS sanitization with context preservation
 4. **Image Sanitizer** (`src/security/image-sanitizer.ts`) - EXIF stripping and image recompression using Sharp
 
@@ -22,13 +22,15 @@ During security testing of upstream OpenClaw (v2025.12.3), I found that adversar
 ### 1. Text Threat Detection (threat-scorer.ts)
 
 Uses regex pattern matching against known jailbreak attempts:
+
 - DAN (Do Anything Now) variants
 - Developer mode activation
-- Role confusion attacks  
+- Role confusion attacks
 - Instruction override patterns
 - Base64/hex encoded commands
 
 Scoring algorithm:
+
 ```
 - Pattern match: +25 points per hit
 - Entropy > 4.5: +15 points (detects random/encoded strings)
@@ -41,22 +43,26 @@ Scoring algorithm:
 Implements three detection methods:
 
 **LSB Analysis:**
+
 - Extracts least significant bits from RGB channels
 - Calculates entropy of LSB sequence
 - Threshold: entropy > 7.8 indicates hidden data
 
 **Shannon Entropy:**
+
 - Per-channel entropy calculation
 - Normal images: 7.2-7.6
 - Suspicious: > 7.9 (compressed/encrypted payload)
 
-**Histogram Analysis:**  
+**Histogram Analysis:**
+
 - Compares color distribution against expected Gaussian
 - Chi-squared test with p < 0.001 threshold
 
 ### 3. HTML Sanitization (web-threat-scorer.ts)
 
 Two-pass approach:
+
 1. Strip dangerous tags: `<script>`, `<iframe>`, `<object>`, `<embed>`
 2. Remove event handlers: `onclick`, `onerror`, etc.
 3. Block `javascript:` and `data:` URIs
@@ -83,7 +89,7 @@ Test suite located in `src/security/*.test.ts`:
 ```bash
 $ pnpm test src/security/red-team.test.ts
 # 28 test cases, 0 failures
-# Tests include: SQL injection, path traversal, jailbreaks, 
+# Tests include: SQL injection, path traversal, jailbreaks,
 # steganography, XSS, ReDoS, Unicode exploits
 
 $ pnpm test src/security/stress/
@@ -95,6 +101,7 @@ $ pnpm test src/security/stress/
 Coverage: 92.5% (lines), generated via `pnpm test:coverage`.
 
 ## Performance
+
 - **Node.js ≥ 22**
 - **Docker** (optional, for containerized deployment)
 
@@ -132,12 +139,12 @@ docker-compose down
 
 Measured on M1 MacBook Pro (2021):
 
-| Operation | Latency | Memory |
-|-----------|---------|--------|
-| Text threat scoring (1KB) | 1.8ms | < 100KB |
-| HTML sanitization (10KB) | 12ms | ~800KB |
-| Image LSB analysis (1MB PNG) | 38ms | ~4MB |
-| Image EXIF strip + recompress | 45ms | ~5MB |
+| Operation                     | Latency | Memory  |
+| ----------------------------- | ------- | ------- |
+| Text threat scoring (1KB)     | 1.8ms   | < 100KB |
+| HTML sanitization (10KB)      | 12ms    | ~800KB  |
+| Image LSB analysis (1MB PNG)  | 38ms    | ~4MB    |
+| Image EXIF strip + recompress | 45ms    | ~5MB    |
 
 These modules add < 50ms latency to the input validation path.
 
@@ -146,6 +153,7 @@ These modules add < 50ms latency to the input validation path.
 ## Installation
 
 Requirements:
+
 - Node.js ≥ 22
 - pnpm (installed via corepack)
 
@@ -157,6 +165,7 @@ pnpm build
 ```
 
 To run tests:
+
 ```bash
 pnpm test src/security/    # Run all security tests
 pnpm test:coverage         # Generate coverage report
@@ -168,10 +177,10 @@ Security thresholds can be adjusted in `src/security/input-guard.ts`:
 
 ```typescript
 const config = {
-  threatScoreBlock: 70,    // Block if score >= 70
-  threatScoreWrap: 40,     // Wrap in warning if >= 40
-  entropyThreshold: 7.8,   // LSB entropy threshold
-  imageProfile: 'benign',  // 'benign' or 'aggressive'
+  threatScoreBlock: 70, // Block if score >= 70
+  threatScoreWrap: 40, // Wrap in warning if >= 40
+  entropyThreshold: 7.8, // LSB entropy threshold
+  imageProfile: "benign", // 'benign' or 'aggressive'
 };
 ```
 
