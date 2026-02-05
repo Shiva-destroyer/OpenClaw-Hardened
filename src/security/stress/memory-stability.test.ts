@@ -1,5 +1,22 @@
-import { describe, it, expect } from "vitest";
+import sharp from "sharp";
+import { describe, it, expect, beforeAll } from "vitest";
 import { guardText, guardMedia } from "../input-guard.js";
+
+let testImage: Buffer;
+
+beforeAll(async () => {
+  // Create a valid 1MB test image once
+  testImage = await sharp({
+    create: {
+      width: 1024,
+      height: 1024,
+      channels: 3,
+      background: { r: 128, g: 128, b: 128 },
+    },
+  })
+    .png()
+    .toBuffer();
+});
 
 describe("Memory Stability (Heavy Load)", () => {
   const runIfGc = global.gc ? it : it.skip;
@@ -23,13 +40,12 @@ describe("Memory Stability (Heavy Load)", () => {
   });
 
   it("handles 50 large images without crashing", async () => {
-    const largeImage = Buffer.alloc(1024 * 1024); // 1MB
-    largeImage.write("\x89PNG\r\n\x1a\n", 0); // Valid PNG header
     for (let i = 0; i < 50; i++) {
       try {
-        await guardMedia(largeImage, {
+        await guardMedia(testImage, {
           source: "whatsapp",
           senderId: `test-${i}`,
+          originalMimeType: "image/png",
           aggressiveSanitization: true,
         });
       } catch {

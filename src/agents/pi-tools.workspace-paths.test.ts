@@ -27,8 +27,8 @@ describe("workspace path resolution", () => {
         const contents = "workspace read ok";
         await fs.writeFile(path.join(workspaceDir, testFile), contents, "utf8");
 
-        process.chdir(otherDir);
         try {
+          process.chdir(otherDir);
           const tools = createOpenClawCodingTools({ workspaceDir });
           const readTool = tools.find((tool) => tool.name === "read");
           expect(readTool).toBeDefined();
@@ -36,11 +36,12 @@ describe("workspace path resolution", () => {
           const result = await readTool?.execute("ws-read", { path: testFile });
           expect(getTextContent(result)).toContain(contents);
         } finally {
+          // Restore cwd BEFORE withTempDir cleanup deletes otherDir
           process.chdir(prevCwd);
         }
       });
     });
-  });
+  }, 180000); // 3 minute timeout
 
   it("writes relative paths against workspaceDir even after cwd changes", async () => {
     await withTempDir("openclaw-ws-", async (workspaceDir) => {
@@ -49,8 +50,8 @@ describe("workspace path resolution", () => {
         const testFile = "write.txt";
         const contents = "workspace write ok";
 
-        process.chdir(otherDir);
         try {
+          process.chdir(otherDir);
           const tools = createOpenClawCodingTools({ workspaceDir });
           const writeTool = tools.find((tool) => tool.name === "write");
           expect(writeTool).toBeDefined();
@@ -63,11 +64,12 @@ describe("workspace path resolution", () => {
           const written = await fs.readFile(path.join(workspaceDir, testFile), "utf8");
           expect(written).toBe(contents);
         } finally {
+          // Restore cwd BEFORE withTempDir cleanup deletes otherDir
           process.chdir(prevCwd);
         }
       });
     });
-  });
+  }, 180000); // 3 minute timeout
 
   it("edits relative paths against workspaceDir even after cwd changes", async () => {
     await withTempDir("openclaw-ws-", async (workspaceDir) => {

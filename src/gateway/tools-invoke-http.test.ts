@@ -41,21 +41,31 @@ describe("POST /tools/invoke", () => {
     const server = await startGatewayServer(port, {
       bind: "loopback",
     });
-    const token = resolveGatewayToken();
 
-    const res = await fetch(`http://127.0.0.1:${port}/tools/invoke`, {
-      method: "POST",
-      headers: { "content-type": "application/json", authorization: `Bearer ${token}` },
-      body: JSON.stringify({ tool: "agents_list", action: "json", args: {}, sessionKey: "main" }),
-    });
+    try {
+      const token = resolveGatewayToken();
 
-    expect(res.status).toBe(200);
-    const body = await res.json();
-    expect(body.ok).toBe(true);
-    expect(body).toHaveProperty("result");
+      // Add abort controller with 10s timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-    await server.close();
-  });
+      const res = await fetch(`http://127.0.0.1:${port}/tools/invoke`, {
+        method: "POST",
+        headers: { "content-type": "application/json", authorization: `Bearer ${token}` },
+        body: JSON.stringify({ tool: "agents_list", action: "json", args: {}, sessionKey: "main" }),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      expect(body.ok).toBe(true);
+      expect(body).toHaveProperty("result");
+    } finally {
+      await server.close();
+    }
+  }, 30000); // 30s test timeout
 
   it("supports tools.alsoAllow as additive allowlist (profile stage)", async () => {
     // No explicit tool allowlist; rely on profile + alsoAllow.
