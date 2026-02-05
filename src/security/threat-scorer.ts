@@ -172,6 +172,14 @@ const MEDIUM_RISK_PATTERNS: ThreatPattern[] = [
     description: "Imperative instruction to ignore previous commands",
   },
   {
+    // Ignore mid-sentence (still imperative, just not line-start)
+    pattern:
+      /\.\s*ignore\s+(all\s+)?(previous|prior|safety|security)\s+(protocols?|instructions?|rules?|guidelines?)/i,
+    score: 65,
+    label: "mid-sentence-ignore",
+    description: "Mid-sentence imperative to ignore safety protocols",
+  },
+  {
     // Disregard commands (not past-tense narratives)
     pattern: /^(please\s+)?disregard\s+(all\s+)?(previous|prior|earlier|above)/im,
     score: 65,
@@ -179,11 +187,11 @@ const MEDIUM_RISK_PATTERNS: ThreatPattern[] = [
     description: "Imperative instruction to disregard previous commands",
   },
   {
-    // Role override ("you are now X")
-    pattern: /you\s+are\s+now\s+(a|an|in)\s+/i,
-    score: 60,
+    // Role override ("you are now X") - expanded to catch DAN, jailbreak names
+    pattern: /you\s+are\s+now\s+(a|an|in|dan|do anything now|[A-Z]{2,})\b/i,
+    score: 65,
     label: "role-override",
-    description: "Attempts to override assistant role",
+    description: "Attempts to override assistant role (including DAN jailbreak)",
   },
   {
     // Forget instructions (imperative)
