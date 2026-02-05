@@ -11,7 +11,7 @@ OpenClaw-Hardened implements a **layered defense system** that processes every i
 ### Defense Layers
 
 ```
-Layer 1: EliteThreatScorer (Text Analysis)
+Layer 1: ThreatScorer (Text Analysis)
          ├─ Tier 1: Jailbreak Detection (Critical)
          ├─ Tier 2: Command Injection (High)
          ├─ Tier 3: Role Manipulation (Medium)
@@ -38,7 +38,7 @@ Layer 4: ImageSanitizer (Image Neutralization)
 
 ---
 
-## 🎯 Layer 1: EliteThreatScorer
+## Layer 1: ThreatScorer (Text Analysis)
 
 **File**: `src/security/threat-scorer.ts`
 
@@ -326,7 +326,7 @@ Security settings in `openclaw.json`:
 ```json
 {
   "security": {
-    "eliteThreatScorer": {
+    "threatScorer": {
       "blockThreshold": 71,
       "wrapThreshold": 31,
       "enableUnicodeNormalization": true
@@ -354,5 +354,5 @@ Security settings in `openclaw.json`:
 ---
 
 <p align="center">
-  <strong>🛡️ Defense in Depth. Zero User Friction. Elite Security.</strong>
+
 </p>

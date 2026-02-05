@@ -265,5 +265,5 @@ Contributors who make significant security improvements will be:
 ---
 
 <p align="center">
-  <strong>🛡️ Defense in Depth. Zero User Friction. Elite Security.</strong>
+  
 </p>

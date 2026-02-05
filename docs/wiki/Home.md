@@ -1,15 +1,8 @@
-# Welcome to OpenClaw: Hardened Security Edition
+# OpenClaw: Hardened Security Fork
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Security-Elite-brightgreen?style=for-the-badge" alt="Security: Elite">
-  <img src="https://img.shields.io/badge/Defense-Production Ready-blue?style=for-the-badge" alt="Defense: Production Ready">
-</p>
+## Why This Fork Exists
 
----
-
-## 🎯 Why This Fork Exists
-
-**OpenClaw-Hardened** was created to solve a critical problem: **AI agents are vulnerable to sophisticated attacks** that traditional web security doesn't address.
+OpenClaw-Hardened addresses security gaps in AI agent input validation. Standard web security does not cover:
 
 When users send messages to AI assistants through WhatsApp, Telegram, Discord, or Slack, they might include:
 
@@ -18,20 +11,18 @@ When users send messages to AI assistants through WhatsApp, Telegram, Discord, o
 - **Malicious HTML**: Web content with hidden CSS tricks or XSS attacks
 - **Command Injection**: Attempts to execute shell commands via crafted inputs
 
-**Standard OpenClaw** handles these with basic keyword detection. **Not good enough.**
-
-**Hardened Edition** implements **production-grade, defense-in-depth security** that stops 99.9% of attacks while maintaining zero user friction for legitimate users.
+Standard OpenClaw uses basic keyword detection. This fork implements multi-tier pattern matching with weighted scoring (0-100) and context-aware sanitization.
 
 ---
 
-## 🛡️ What We Built
+## What Was Implemented
 
-This fork adds **four elite-tier security modules**:
+This fork adds four security modules:
 
-1. **EliteThreatScorer**: Multi-tier weighted scoring system (0-100) for text-based attacks
-2. **ImageAnomalyDetector**: LSB analysis + Shannon entropy detection for steganography
-3. **WebThreatScorer**: Context-aware HTML sanitization that preserves formatting
-4. **ImageSanitizer**: EXIF stripping + recompression to neutralize image payloads
+1. **ThreatScorer** (`src/security/threat-scorer.ts`): Weighted scoring system (0-100) for text-based attacks
+2. **ImageAnomalyDetector** (`src/security/image-anomaly-detector.ts`): LSB analysis + Shannon entropy detection
+3. **WebThreatScorer** (`src/security/web-threat-scorer.ts`): HTML sanitization with context preservation
+4. **ImageSanitizer** (`src/security/image-sanitizer.ts`): EXIF stripping + recompression
 
 Plus **comprehensive testing**:
 
@@ -136,7 +127,7 @@ Our stress testing revealed these metrics:
 │              INPUT GUARD LAYER                   │
 │                                                  │
 │  ┌──────────────────────────────────────────┐  │
-│  │  Text → EliteThreatScorer (4-tier)       │  │
+│  │  Text → ThreatScorer (4-tier)       │  │
 │  │  HTML → WebThreatScorer (context-aware)  │  │
 │  │  Image → Anomaly Detector + Sanitizer    │  │
 │  └──────────────────────────────────────────┘  │
@@ -157,7 +148,7 @@ Our stress testing revealed these metrics:
 
 **Security Architect**: [Sai Srujan Murthy A N](mailto:Saisrujanmurthy@gmail.com)
 
-This fork demonstrates **enterprise-grade security practices** for AI agents. The techniques implement:
+This fork implements security techniques from:
 
 - OWASP Top 10 for LLM Applications
 - NIST AI Risk Management Framework
@@ -174,6 +165,4 @@ This fork demonstrates **enterprise-grade security practices** for AI agents. Th
 
 ---
 
-<p align="center">
-  <strong>🛡️ Defense in Depth. Zero User Friction. Elite Security.</strong>
-</p>
+
