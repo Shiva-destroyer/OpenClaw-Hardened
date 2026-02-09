@@ -39,15 +39,15 @@ api.on("message_received", async (event, ctx) => {
 
 ### Key Differentiators
 
-| Feature | Gray Swan Cygnal | GPT-OSS-Safeguard | **OpenClaw Security** |
-|---------|------------------|-------------------|----------------------|
-| Architecture | API-based (cloud) | Model-based (local) | **Hybrid: Rules + ML** |
-| Latency | ~200ms | ~50ms | **<10ms** (rules), 50ms (sanitization) |
-| Dependencies | External API | 20GB model | **Sharp only** (image ops) |
-| Layers | 1 (LLM check) | 1 (LLM check) | **4 tiers** (text, web, image, sanitization) |
-| Steganography | ❌ | ❌ | **✅ LSB entropy detection** |
-| Media Sanitization | ❌ | ❌ | **✅ Re-encoding attack surface reduction** |
-| Offline Capable | ❌ | ✅ | **✅** |
+| Feature            | Gray Swan Cygnal  | GPT-OSS-Safeguard   | **OpenClaw Security**                        |
+| ------------------ | ----------------- | ------------------- | -------------------------------------------- |
+| Architecture       | API-based (cloud) | Model-based (local) | **Hybrid: Rules + ML**                       |
+| Latency            | ~200ms            | ~50ms               | **<10ms** (rules), 50ms (sanitization)       |
+| Dependencies       | External API      | 20GB model          | **Sharp only** (image ops)                   |
+| Layers             | 1 (LLM check)     | 1 (LLM check)       | **4 tiers** (text, web, image, sanitization) |
+| Steganography      | ❌                | ❌                  | **✅ LSB entropy detection**                 |
+| Media Sanitization | ❌                | ❌                  | **✅ Re-encoding attack surface reduction**  |
+| Offline Capable    | ❌                | ✅                  | **✅**                                       |
 
 ---
 
@@ -75,12 +75,12 @@ Low latency, multi-tier defense  → OpenClaw Security
 
 From PR #6095 discussion:
 
-| Contributor | Request | Our Response |
-|------------|---------|--------------|
-| @bb-connor | "Pattern matching + ML hybrid" | ✅ Implemented (rules first-pass, ML optional) |
-| @somanole | "Local inference, sub-50ms" | ✅ <10ms for text, 50ms for images |
-| @jkoprax | "How can I help merge this?" | ✅ Provide 3rd example implementation |
-| @hexdaemon | "Keep store-agnostic" | ✅ No external dependencies, pure local |
+| Contributor | Request                        | Our Response                                   |
+| ----------- | ------------------------------ | ---------------------------------------------- |
+| @bb-connor  | "Pattern matching + ML hybrid" | ✅ Implemented (rules first-pass, ML optional) |
+| @somanole   | "Local inference, sub-50ms"    | ✅ <10ms for text, 50ms for images             |
+| @jkoprax    | "How can I help merge this?"   | ✅ Provide 3rd example implementation          |
+| @hexdaemon  | "Keep store-agnostic"          | ✅ No external dependencies, pure local        |
 
 ---
 
@@ -93,8 +93,7 @@ The current PR #6095 provides two guardrail implementations:
 1. **Gray Swan Cygnal** → Cloud API, high accuracy, ~200ms latency
 2. **GPT-OSS-Safeguard** → Local LLM, 20GB model, ~50ms latency
 
-**OpenClaw Security provides the third path:**
-3. **Rule-Based + Hybrid** → Local rules, <20ms latency, multi-tier defense
+**OpenClaw Security provides the third path:** 3. **Rule-Based + Hybrid** → Local rules, <20ms latency, multi-tier defense
 
 ### Strategic Value
 
@@ -111,6 +110,7 @@ Low latency + CPU-only   → OpenClaw Security (rules)
 ### Architecture Validation
 
 Our implementation proves the plugin API works for:
+
 - ✅ Multi-tier defense (4 layers)
 - ✅ Hybrid rule + ML systems
 - ✅ External security modules (guardText, guardMedia)
@@ -186,12 +186,14 @@ OpenClaw Security Ecosystem
 **Who We Are:** 2nd-year Cybersecurity student (Sai Srujan Murthy A N)  
 **Motivation:** Learning by building + contributing to real OSS security  
 **Process:**
+
 1. Discovered OpenClaw via prompt injection research
 2. Identified vulnerabilities ([Issue #8093](https://github.com/openclaw/openclaw/issues/8093))
 3. Built proof-of-concept defense ([OpenClaw Hardened](https://github.com/Shiva-destroyer/OpenClaw-Hardened))
 4. Refactored into plugin architecture when PR #6095 emerged
 
 **Community Feedback Received:**
+
 - "AI-generated documentation" → Fixed by rewriting with real test data
 - "Untested code" → Fixed by running live-fire tests, submitted actual threat scores
 - "Not specific enough" → Fixed by adding regex patterns, entropy formulas, benchmark results
@@ -233,6 +235,7 @@ Email: saisrujanmurthy@gmail.com
 Timezone: IST (UTC+5:30)
 
 Available for:
+
 - Code review sessions
 - Architecture discussions
 - Test case contributions
