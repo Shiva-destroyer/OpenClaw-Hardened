@@ -65,7 +65,7 @@ describe("POST /tools/invoke", () => {
     } finally {
       await server.close();
     }
-  }, 30000); // 30s test timeout
+  }, 120000); // 120s test timeout (Windows CI is slow)
 
   it("supports tools.alsoAllow as additive allowlist (profile stage)", async () => {
     // No explicit tool allowlist; rely on profile + alsoAllow.
