@@ -1,0 +1,60 @@
+{
+  "id": "openclaw-security",
+  "kind": "security",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "enabled": {
+        "type": "boolean",
+        "description": "Enable security plugin"
+      },
+      "threatScoringThreshold": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 100,
+        "description": "Minimum threat score to trigger blocking (default: 100)"
+      },
+      "aggressiveSanitization": {
+        "type": "boolean",
+        "description": "Enable aggressive sanitization mode"
+      },
+      "blockOnThreat": {
+        "type": "boolean",
+        "description": "Block tool calls that exceed threat threshold"
+      },
+      "logSecurityEvents": {
+        "type": "boolean",
+        "description": "Log security events to console"
+      },
+      "exemptChannels": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "List of channels exempt from security checks"
+      },
+      "enabledTiers": {
+        "type": "object",
+        "properties": {
+          "textThreatScoring": {
+            "type": "boolean",
+            "description": "Enable text-based threat detection"
+          },
+          "webThreatScoring": {
+            "type": "boolean",
+            "description": "Enable web content threat scoring"
+          },
+          "imageAnomalyDetection": {
+            "type": "boolean",
+            "description": "Enable image anomaly detection"
+          },
+          "mediaSanitization": {
+            "type": "boolean",
+            "description": "Enable media sanitization"
+          }
+        }
+      }
+    }
+  }
+}

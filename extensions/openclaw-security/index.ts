@@ -1,46 +1,31 @@
 import type { OpenClawPluginApi, PluginHookBeforeToolCallResult } from "openclaw/plugin-sdk";
-import { Type } from "@sinclair/typebox";
-import { guardText, guardMedia } from "../../src/security/input-guard.js";
-import { detectImageAnomalies } from "../../src/security/image-anomaly-detector.js";
+import { guardText } from "../../src/security/input-guard.js";
 
 /**
  * OpenClaw Security Suite Plugin
- * 
+ *
  * Defense-in-depth security plugin implementing 4-tier input validation:
  * - Tier 1: Text-based threat detection (EliteThreatScorer)
  * - Tier 2: Web content threat scoring (WebThreatScorer)
  * - Tier 3: Image anomaly detection (steganography, exploits)
  * - Tier 4: Media sanitization (ImageSanitizer)
- * 
+ *
  * Integrates with the plugin hook system to intercept and validate:
  * - Tool calls (before_tool_call)
  * - Message inputs (message_received)
- * 
+ *
  * @see https://github.com/Shiva-destroyer/OpenClaw-Hardened/wiki
  */
 
 const securityConfigSchema = {
   safeParse(value: unknown) {
-    const schema = Type.Object({
-      enabled: Type.Optional(Type.Boolean()),
-      threatScoringThreshold: Type.Optional(Type.Number({ minimum: 0, maximum: 100 })),
-      aggressiveSanitization: Type.Optional(Type.Boolean()),
-      blockOnThreat: Type.Optional(Type.Boolean()),
-      logSecurityEvents: Type.Optional(Type.Boolean()),
-      exemptChannels: Type.Optional(Type.Array(Type.String())),
-      enabledTiers: Type.Optional(
-        Type.Object({
-          textThreatScoring: Type.Optional(Type.Boolean()),
-          webThreatScoring: Type.Optional(Type.Boolean()),
-          imageAnomalyDetection: Type.Optional(Type.Boolean()),
-          mediaSanitization: Type.Optional(Type.Boolean()),
-        }),
-      ),
-    });
     try {
       // Simple validation
       if (typeof value !== "object" || value === null) {
-        return { success: false, error: { issues: [{ path: [], message: "Config must be an object" }] } };
+        return {
+          success: false,
+          error: { issues: [{ path: [], message: "Config must be an object" }] },
+        };
       }
       return { success: true, data: value };
     } catch (error) {
@@ -110,7 +95,8 @@ const DEFAULT_CONFIG: Required<SecurityConfig> = {
 const openclawSecurityPlugin = {
   id: "openclaw-security",
   name: "OpenClaw Security Suite",
-  description: "4-tier defense engine: prompt injection detection, steganography prevention, and media sanitization",
+  description:
+    "4-tier defense engine: prompt injection detection, steganography prevention, and media sanitization",
   version: "1.0.0",
   configSchema: securityConfigSchema,
 
@@ -118,10 +104,11 @@ const openclawSecurityPlugin = {
     const config: Required<SecurityConfig> = {
       ...DEFAULT_CONFIG,
       ...(api.pluginConfig as SecurityConfig),
-      enabledTiers: {
-        ...DEFAULT_CONFIG.enabledTiers,
-        ...((api.pluginConfig as SecurityConfig)?.enabledTiers ?? {}),
-      },
+      enabledTiers: Object.assign(
+        {},
+        DEFAULT_CONFIG.enabledTiers,
+        (api.pluginConfig as SecurityConfig)?.enabledTiers,
+      ),
     };
 
     if (!config.enabled) {
@@ -163,11 +150,14 @@ const openclawSecurityPlugin = {
                   senderId: ctx.agentAccountId ?? "unknown",
                 });
 
-                if (guardResult.threatScore > config.threatScoringThreshold) {
-                  const reason = `Threat detected in ${toolName}.${key}: score ${guardResult.threatScore}/100`;
+                const score = guardResult.threatScore?.score ?? 0;
+                if (score > config.threatScoringThreshold) {
+                  const reason = `Threat detected in ${toolName}.${key}: score ${score}/100`;
                   if (config.logSecurityEvents) {
                     api.logger.warn(`🚨 ${reason}`);
-                    api.logger.warn(`   Detected patterns: ${guardResult.detectedPatterns.map((p) => p.label).join(", ")}`);
+                    api.logger.warn(
+                      `   Detected patterns: ${guardResult.detectedPatterns.map((p) => p.label).join(", ")}`,
+                    );
                   }
 
                   if (config.blockOnThreat) {
@@ -220,12 +210,15 @@ const openclawSecurityPlugin = {
               senderId: ctx.agentAccountId ?? "unknown",
             });
 
-            if (guardResult.threatScore > config.threatScoringThreshold) {
+            const score = guardResult.threatScore?.score ?? 0;
+            if (score > config.threatScoringThreshold) {
               if (config.logSecurityEvents) {
                 api.logger.warn(
-                  `🛡️ High-threat message received (score: ${guardResult.threatScore}/100) from ${source}`,
+                  `🛡️ High-threat message received (score: ${score}/100) from ${source}`,
                 );
-                api.logger.warn(`   Detected patterns: ${guardResult.detectedPatterns.map((p) => p.label).join(", ")}`);
+                api.logger.warn(
+                  `   Detected patterns: ${guardResult.detectedPatterns.map((p) => p.label).join(", ")}`,
+                );
               }
 
               // Note: message_received is fire-and-forget, we log but don't block
@@ -262,7 +255,9 @@ const openclawSecurityPlugin = {
           console.log(`  ✓ Web Threat Scoring: ${config.enabledTiers.webThreatScoring}`);
           console.log(`  ✓ Image Anomaly Detection: ${config.enabledTiers.imageAnomalyDetection}`);
           console.log(`  ✓ Media Sanitization: ${config.enabledTiers.mediaSanitization}`);
-          console.log(`\nExempt Channels: ${config.exemptChannels.length > 0 ? config.exemptChannels.join(", ") : "None"}`);
+          console.log(
+            `\nExempt Channels: ${config.exemptChannels.length > 0 ? config.exemptChannels.join(", ") : "None"}`,
+          );
         });
 
       securityCommand
@@ -270,7 +265,8 @@ const openclawSecurityPlugin = {
         .description("Test input against threat detection")
         .action((input: string) => {
           const result = guardText(input, { source: "cli-test" });
-          console.log(`Threat Score: ${result.threatScore}/100`);
+          const score = result.threatScore?.score ?? 0;
+          console.log(`Threat Score: ${score}/100`);
           console.log(`Verdict: ${result.verdict}`);
           if (result.detectedPatterns.length > 0) {
             console.log("Detected Patterns:");
