@@ -1,0 +1,31 @@
+{
+  "name": "@openclaw/extension-security",
+  "version": "1.0.0",
+  "description": "4-tier defense engine: prompt injection detection, steganography prevention, and media sanitization",
+  "type": "module",
+  "main": "./index.ts",
+  "keywords": [
+    "openclaw",
+    "security",
+    "guardrails",
+    "prompt-injection",
+    "steganography",
+    "defense-in-depth"
+  ],
+  "author": "Sai Srujan Murthy A N",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Shiva-destroyer/OpenClaw-Hardened.git",
+    "directory": "extensions/openclaw-security"
+  },
+  "dependencies": {
+    "@sinclair/typebox": "workspace:*"
+  },
+  "peerDependencies": {
+    "openclaw": "workspace:*"
+  },
+  "devDependencies": {
+    "openclaw": "workspace:*"
+  }
+}

@@ -2,6 +2,36 @@
 
 Docs: https://docs.openclaw.ai
 
+## Unreleased
+
+### Changes
+
+- **Security:** Add OpenClaw Security Suite plugin (`extensions/openclaw-security`) — 4-tier defense engine implementing prompt injection detection, web content threat scoring, image steganography detection, and media sanitization. Integrates with plugin hook system via `before_tool_call` and `message_received` hooks.
+- **Testing:** Fix 4 CI test failures (memory-stability, pi-tools workspace paths, program smoke, tools-invoke-http). All tests now passing consistently across Linux/macOS/Windows.
+- **Lint:** Resolve 4 oxlint TypeScript errors in security modules and test files.
+
+### Security Enhancements
+
+- **Tier 1: Text Threat Scoring** — Pattern-based detection of 37 attack vectors including prompt injection, jailbreaks, role overrides, and instruction bypasses (ThreatScorer).
+- **Tier 2: Web Content Scoring** — HTML obfuscation, destructive commands, and privilege escalation detection (WebThreatScorer).
+- **Tier 3: Image Anomaly Detection** — LSB entropy analysis for steganographic payload detection (ImageAnomalyDetector).
+- **Tier 4: Media Sanitization** — Re-encoding images to strip EXIF, ICC profiles, and embedded scripts (ImageSanitizer).
+- **Configuration:** Full config schema with granular tier toggles, threat thresholds, and channel exemptions.
+- **CLI:** Added `openclaw security status` and `openclaw security test` commands.
+
+### Documentation
+
+- Wiki: Security architecture deep-dive with real test data and threat scores.
+- README: Technical specification with verification scripts and reproducible benchmarks.
+- UPSTREAM_CONTRIBUTION_STRATEGY.md: Strategic alignment with PR #6095 (Modular Guardrails).
+- All documentation rewritten to remove marketing language and show actual implementation details.
+
+### Related Upstream Work
+
+- Aligns with [PR #6095](https://github.com/openclaw/openclaw/pull/6095) — Modular Guardrails plugin hook infrastructure.
+- Addresses [Issue #8093](https://github.com/openclaw/openclaw/issues/8093) — Security hardening architecture.
+- Demonstrates plugin-based security implementation ready for upstream contribution.
+
 ## 2026.2.2
 
 ### Changes
